@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: flipkart-product-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/public/health
+    envVars:
+      - key: FETCH_MODE
+        value: http
+      - key: ENABLE_DEBUG_ENDPOINT
+        value: "false"
+      - key: API_KEYS
+        sync: false
+      - key: UI_PASSWORD
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false

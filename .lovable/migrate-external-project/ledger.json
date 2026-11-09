@@ -1,0 +1,98 @@
+{
+  "source": "bolt",
+  "source_artifact": "project-bolt-sb1-rnk2ywkv.zip (updated v2.0.0; replaces project-bolt-sb1-s3zuxboq.zip)",
+  "summary": "Bolt node starter wrapping a Python FastAPI + Playwright (headless Chromium) Flipkart product-details scraper. No database, no auth, no storage, no payments, no schedules.",
+  "capabilities": [
+    {
+      "capability": "code: product scraper v2 (layered extraction with extraction_trace, price_with_offers, canonical_url, offer text summaries, cross-field validation)",
+      "source": "scraper.py v2 (Playwright, JSON-LD/embedded state/meta, semantic text, DOM fallback, validation)",
+      "outcome": "migrated to TypeScript (extract.ts) and tuned against two real Flipkart watch pages: MRP from the struck-through price in the main product section, seller only from the seller block, offers grouped into visible cards, highlights as specifications, selected variants; hidden layers and ad carousels ignored",
+      "status": "verified",
+      "next_action": "Live check from the published app (sandbox IP receives HTTP 429 from Flipkart)"
+    },
+    {
+      "capability": "public endpoint GET /",
+      "source": "main.py root() info JSON",
+      "outcome": "migrate: JSON info moved to GET /api/public; / now serves a web page to try the API",
+      "status": "verified",
+      "next_action": "none"
+    },
+    {
+      "capability": "public endpoint GET /health",
+      "source": "main.py health()",
+      "outcome": "migrate: GET /api/public/health",
+      "status": "verified",
+      "next_action": "none"
+    },
+    {
+      "capability": "public endpoint GET /product?url=",
+      "source": "main.py get_product() with 400/404/503/500 error contract",
+      "outcome": "migrate: GET /api/public/product?url= with the same JSON shape and error codes",
+      "status": "verified",
+      "next_action": "none"
+    },
+    {
+      "capability": "public endpoint GET /debug?url=",
+      "source": "main.py debug_product()",
+      "outcome": "migrate: GET /api/public/debug; page HTML returned only when DEBUG_SAVE_HTML=true (no disk on the edge)",
+      "status": "verified",
+      "next_action": "none"
+    },
+    {
+      "capability": "configuration env vars (PORT, HEADLESS, REQUEST_TIMEOUT_SECONDS, USER_AGENT, DEBUG_SAVE_HTML)",
+      "source": "config.py / .env.example",
+      "outcome": "PORT and HEADLESS dropped (hosting-managed, no browser); REQUEST_TIMEOUT_SECONDS, USER_AGENT and DEBUG_SAVE_HTML kept as optional settings",
+      "status": "migrated",
+      "next_action": "none (no secrets required)"
+    },
+    {
+      "capability": "tests",
+      "source": "tests/test_api.py + tests/test_extraction.py + fixtures/acer_aspire3.html",
+      "outcome": "ported to vitest, plus fixture tests on two real watch pages",
+      "status": "verified",
+      "next_action": "none"
+    },
+    {
+      "capability": "Docker / docker-compose / debug scripts",
+      "source": "Dockerfile, docker-compose.yml, debug_selectors*.py, debug.png",
+      "outcome": "not needed: Lovable hosts the app; debug scripts were local selector-hunting tools",
+      "status": "accepted",
+      "next_action": "none"
+    },
+    {
+      "capability": "schema / records",
+      "source": "none detected",
+      "outcome": "n/a",
+      "status": "accepted",
+      "next_action": "none"
+    },
+    {
+      "capability": "auth identities / authorization",
+      "source": "none detected (API is unauthenticated)",
+      "outcome": "n/a",
+      "status": "accepted",
+      "next_action": "none"
+    },
+    {
+      "capability": "storage / email / payments / AI / schedules / webhooks",
+      "source": "none detected",
+      "outcome": "n/a",
+      "status": "accepted",
+      "next_action": "none"
+    },
+    {
+      "capability": "secrets",
+      "source": "none required",
+      "outcome": "n/a",
+      "status": "accepted",
+      "next_action": "none"
+    },
+    {
+      "capability": "cutover",
+      "source": "local-only API on port 8001",
+      "outcome": "callers switch from http://localhost:8001/{health,product} to <app-url>/api/public/{health,product}",
+      "status": "pending",
+      "next_action": "Publish, then point any scripts at the new URL"
+    }
+  ]
+}

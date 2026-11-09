@@ -1,0 +1,12 @@
+node_modules
+.output
+dist
+.git
+.github
+.env
+.env.*
+!.env.example
+*.log
+.lovable
+.bolt
+src/lib/flipkart/__fixtures__
